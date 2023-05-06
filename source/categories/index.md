@@ -1,4 +1,3 @@
 ---
 title: categories
-date: 2023-05-06 18:20:58
 ---
