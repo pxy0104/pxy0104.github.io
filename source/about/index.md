@@ -12,4 +12,8 @@ I **think** I'll use it to format all of my documents from now on.
 {% img ../images/dog.jpg '"dog" "lihua"' %}
 这是一个分割行
 
-![123](/images/dog.jpg) # 有效格式
+![123](/images/dog.jpg)
+<!-- 以上是有效格式 -->
+## 这是郭旭东,此人是一名兽医
+
+郭医生QQ:1300433162
