@@ -1,0 +1,734 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Justin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="当业务变得极其庞大的时候，原有的单表可能不足以维持业务的正常发展，此时就需要进行分库分表操作，来缓解数据库的压力">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dbRouter">
+<meta property="og:url" content="http://example.com/2023/05/10/dbRouter/index.html">
+<meta property="og:site_name" content="Bolg">
+<meta property="og:description" content="当业务变得极其庞大的时候，原有的单表可能不足以维持业务的正常发展，此时就需要进行分库分表操作，来缓解数据库的压力">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2023/05/10/dbRouter/01.png">
+<meta property="article:published_time" content="2023-05-10T13:54:57.000Z">
+<meta property="article:modified_time" content="2023-05-10T14:01:03.358Z">
+<meta property="article:author" content="Justin">
+<meta property="article:tag" content="programing">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://example.com/2023/05/10/dbRouter/01.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>dbRouter - Bolg</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dbRouter"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-05-10 13:54" pubdate>
+          2023年5月10日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          17k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          143 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">dbRouter</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>当业务变得极其庞大的时候，原有的单表可能不足以维持业务的正常发展，此时就需要进行分库分表操作，来缓解数据库的压力</p>
+<span id="more"></span>
+<h1 id="dbRouter"><a href="#dbRouter" class="headerlink" title="dbRouter"></a>dbRouter</h1><p><img src="/2023/05/10/dbRouter/01.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="DBRouter-java"><a href="#DBRouter-java" class="headerlink" title="DBRouter.java"></a>DBRouter.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Documented</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Target(&#123;ElementType.TYPE,ElementType.METHOD&#125;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> DBRouter &#123;<br>    String <span class="hljs-title function_">key</span> <span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>@Documented</strong>是Java中的一个元注解，它用于指示被该注解修饰的注解是否会被包含在JavaDoc文档中。<br />具体来说，当一个注解添加了@Documented注解后，使用该注解修饰的类、方法或字段等等，在生成JavaDoc文档时，这些注解会被包含在文档中，并能够被文档工具展示出来。如果没有使用@Documented注解，则这些注解不会被包含在JavaDoc文档中。<br />举个例子，比如在编写自己的Java框架或库时，可能会定义一些自定义注解，这些注解可能是用来描述类、方法、参数等信息的，如果想让其他人更好地了解这些注解的作用以及如何使用它们，就可以为这些注解添加@Documented注解，这样在生成JavaDoc文档时，这些注解就可以被包含进去，方便用户查看和阅读。<br />因此，@Documented注解的作用就是告诉Java编译器，将被该注解修饰的注解包含在JavaDoc文档中，使得开发者可以更方便地了解和使用这些注解。</p>
+<p>**@Retention(RetentionPolicy.RUNTIME)**是Java中的一个元注解，它用于指示被该注解修饰的注解的保留策略，即在什么时候该注解会失效。<br />具体来说，@Retention(RetentionPolicy.RUNTIME)表示被该注解修饰的注解会在运行时保留，并可以通过反射机制获取到。换句话说，如果没有使用@Retention(RetentionPolicy.RUNTIME)注解，则该注解修饰的注解会在编译时被丢弃，而无法在程序运行时获取到。<br />举个例子，假设我们定义了一个自定义注解@MyAnnotation，并希望在程序运行时能够通过反射获取到该注解的信息，例如注解的属性值等等。此时就需要为@MyAnnotation添加@Retention(RetentionPolicy.RUNTIME)注解，以便让该注解在运行时保持不变。<br />因此，@Retention(RetentionPolicy.RUNTIME)注解的作用是指定被该注解修饰的注解的保留策略为运行时保留，并且可以通过反射机制获取注解信息，这对于编写某些框架或库非常有用。</p>
+<p>**@Target({ElementType.TYPE, ElementType.METHOD})**是Java中的一个元注解，用于指定被该注解修饰的注解可以应用的目标元素类型。<br />具体来说，@Target({ElementType.TYPE, ElementType.METHOD})表示被该注解修饰的注解可以应用在类、接口和枚举类型上，同时也可以应用在方法上。如果尝试将这个注解用于其他的目标元素类型，如属性、构造函数等，则会编译错误。<br />举个例子，假设我们定义了一个自定义注解@MyAnnotation，并希望让这个注解可以用于类、接口和枚举类型上，同时也可以用于方法上。此时就需要为@MyAnnotation添加@Target({ElementType.TYPE, ElementType.METHOD})注解，以便限制该注解的使用范围，避免出现不合理或者意外的情况。<br />因此，@Target({ElementType.TYPE, ElementType.METHOD})注解的作用是指定被该注解修饰的注解可以应用的目标元素类型，它可以限制注解的使用范围，使得注解的作用更加明确和准确。</p>
+<h2 id="DBContextHolder-java"><a href="#DBContextHolder-java" class="headerlink" title="DBContextHolder.java"></a>DBContextHolder.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DBContextHolder</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> ThreadLocal&lt;String&gt; dbKey = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadLocal</span>&lt;&gt;();<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">static</span> ThreadLocal&lt;String&gt; tbKey = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadLocal</span>&lt;&gt;();<br>    <span class="hljs-comment">//get方法</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">getDBKey</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> dbKey.get();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title function_">getTBKey</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> tbKey.get();<br>    &#125;<br><br>    <span class="hljs-comment">//set方法</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setDBKey</span><span class="hljs-params">(String dbKeyIdx)</span>&#123;<br>        dbKey.set(dbKeyIdx);<br>    &#125;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setTBKey</span><span class="hljs-params">(String tbKeyIdx)</span>&#123;<br>        tbKey.set(tbKeyIdx);<br>    &#125;<br>    <span class="hljs-comment">//清空key</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">clearDBKey</span><span class="hljs-params">()</span>&#123;<br>        dbKey.remove();<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">clearTBKey</span><span class="hljs-params">()</span>&#123;<br>        tbKey.remove();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个类是一个线程池上下文管理类，主要用来管理当前线程使用的数据库和表的名称。<br />具体来说，这个类中定义了两个ThreadLocal类型的静态变量：dbKey和tbKey。这两个变量分别用于存储当前线程使用的数据库名称和表名称，它们的值可以在应用程序运行时通过代码来设置或者获取。<br />通过使用这个类，我们可以在应用程序中动态切换数据库和表，而无需修改实际执行查询和操作的代码。例如，在某些情况下需要进行读写分离，可以在读操作前将dbKey设置为读库的名称，在写操作前将其设置为写库的名称；在某些情况下需要动态选择表名，可以先通过某种规则计算出表名，然后将其设置到tbKey中，再执行相关操作。<br />总之，DBContextHolder类的作用是提供一种机制，让应用程序可以动态地切换数据库和表，从而更加灵活地控制数据的访问和操作。该类通常会与其他数据源相关组件（如AbstractRoutingDataSource）配合使用，以实现多数据源或者动态数据源切换等功能。</p>
+<p>**remove()**方法是ThreadLocal类中的一个实例方法，用于将当前线程绑定的变量值删除。在DBContextHolder类中，clearDBKey()和clearTBKey()方法分别调用了dbKey.remove()和tbKey.remove()方法，用于清空当前线程绑定的数据库和表名称。<br />由于ThreadLocal对象通常是与线程一一对应的，因此使用remove()方法可以防止内存泄漏。如果不清除线程绑定的变量值，可能会出现以下情况之一：</p>
+<ul>
+<li>当前线程结束后，ThreadLocal对象仍然持有该变量的引用，导致该变量无法被GC回收，从而发生内存泄漏。</li>
+<li>由于线程池的复用机制，下一个使用该线程的任务可能会意外地继承上一个任务的线程绑定变量值，导致程序出现错误或者异常行为。</li>
+</ul>
+<p>因此，在使用ThreadLocal时，最好在不再需要使用线程绑定变量的时候调用remove()方法进行清理。在DBContextHolder类中，clearDBKey()和clearTBKey()方法的作用就是通过调用remove()方法来清空当前线程绑定的数据库和表名称，以便下一次使用线程时，这些变量的值不会影响到其他任务。</p>
+<h2 id="DynamicDataSource-java"><a href="#DynamicDataSource-java" class="headerlink" title="DynamicDataSource.java"></a>DynamicDataSource.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DynamicDataSource</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractRoutingDataSource</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">determineCurrentLookupKey</span><span class="hljs-params">()</span> &#123;<br>    	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;db&quot;</span> + DBContextHolder.getDBKey();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>AbstractRoutingDataSource在Mybatis中引入了spring-jdbc依赖，所以不必刻意再次单独引入spring-jdbc依赖<br /><strong>AbstractRoutingDataSource抽象类</strong><br />AbstractRoutingDataSource是Spring框架中的一个数据源类，它可以根据特定的规则动态切换应用程序连接到的数据源。<br />在某些应用程序中，需要使用多个数据库（例如：读写分离），此时就需要使用AbstractRoutingDataSource来实现动态切换数据源。通过继承AbstractRoutingDataSource类并实现determineCurrentLookupKey()方法，可以定义选择数据源的逻辑，例如基于线程上下文、基于请求参数、基于用户权限等。<strong>当应用程序需要访问数据库时，Spring框架会自动调用determineCurrentLookupKey()方法获取当前要使用的数据源，然后将数据源交给JdbcTemplate或其他数据访问组件使用。</strong><br />因此，AbstractRoutingDataSource的作用是提供一种机制，让Spring应用程序可以基于运行时的条件选择不同的数据源，并且无需修改现有代码即可实现数据源的切换。</p>
+<h2 id="DataSourceAutoConfig-java"><a href="#DataSourceAutoConfig-java" class="headerlink" title="DataSourceAutoConfig.java"></a>DataSourceAutoConfig.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.tute.middleware.db.router.config;<br><br><span class="hljs-keyword">import</span> com.tute.middleware.db.router.DBRouterConfig;<br><span class="hljs-keyword">import</span> com.tute.middleware.db.router.dynamic.DynamicDataSource;<br><span class="hljs-keyword">import</span> org.springframework.context.EnvironmentAware;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Bean;<br><span class="hljs-keyword">import</span> org.springframework.core.env.Environment;<br><span class="hljs-keyword">import</span> org.springframework.jdbc.datasource.DriverManagerDataSource;<br><br><span class="hljs-keyword">import</span> javax.sql.DataSource;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><span class="hljs-keyword">import</span> java.util.Map;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 2023/5/10</span><br><span class="hljs-comment">**/</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DataSourceAutoConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EnvironmentAware</span> &#123;<br>    <span class="hljs-keyword">private</span> Map&lt;String, Map&lt;String,Object&gt;&gt; dataSourceMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> dbCount; <span class="hljs-comment">//数据库的数量</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> tbCount; <span class="hljs-comment">//表的数量</span><br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> DBRouterConfig <span class="hljs-title function_">dbRouterConfig</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DBRouterConfig</span>(dbCount,tbCount);<br>    &#125;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> DataSource <span class="hljs-title function_">dataSource</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-comment">// 创建数据源</span><br>        Map&lt;Object,Object&gt; targetDataSource = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>        <span class="hljs-keyword">for</span> (String dbInfo : dataSourceMap.keySet()) &#123;<br>            <span class="hljs-comment">//根据外层Map的KeySet的key拿到内层的Map</span><br>            Map&lt;String, Object&gt; objMap = dataSourceMap.get(dbInfo);<br>            targetDataSource.put(dbInfo,<span class="hljs-keyword">new</span> <span class="hljs-title class_">DriverManagerDataSource</span>(<br>                objMap.get(<span class="hljs-string">&quot;url&quot;</span>).toString(),<br>                objMap.get(<span class="hljs-string">&quot;username&quot;</span>).toString(),<br>                objMap.get(<span class="hljs-string">&quot;password&quot;</span>).toString()));<br>        &#125;<br>        <span class="hljs-comment">//设置数据源</span><br>        <span class="hljs-type">DynamicDataSource</span> <span class="hljs-variable">dynamicDataSource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DynamicDataSource</span>();<br>        dynamicDataSource.setTargetDataSources(targetDataSource);<br>        <span class="hljs-comment">/*</span><br><span class="hljs-comment">        这行代码是将一个targetDataSource数据源对象设置为动态数据源dynamicDataSource的</span><br><span class="hljs-comment">        目标数据源。在Spring中，通过DynamicDataSource和AbstractRoutingDataSource两个类的配合使用，</span><br><span class="hljs-comment">        可以实现动态切换多个数据源。</span><br><span class="hljs-comment">		具体来说，DynamicDataSource是对AbstractRoutingDataSource的一</span><br><span class="hljs-comment">        个扩展，它除了支持动态数据源的切换外，还支持针对不同的查询/操作类型选择不同的数据源。</span><br><span class="hljs-comment">        setTargetDataSources()方法就是用于设置动态数据源的目标数据源的，</span><br><span class="hljs-comment">        即将targetDataSource对象作为参数传递进去，表示该动态数据源会从targetDataSource中获取</span><br><span class="hljs-comment">        所有可用的数据源。</span><br><span class="hljs-comment">		在实际应用中，targetDataSource通常是一个Map类型的对象，用于存储多个数据源对象，</span><br><span class="hljs-comment">		例如读写分离、分表等场景下需要使用多个数据源。</span><br><span class="hljs-comment">        每个数据源需要有一个标识符，如数据库名称或者其他标识符，以便在程序运行时进行调用和切换。</span><br><span class="hljs-comment">        设置了目标数据源后，动态数据源就可以根据特定的规则或条件来动态地切换数据源，</span><br><span class="hljs-comment">        并且能够确保在当前线程中只有一个数据源被使用。</span><br><span class="hljs-comment">        因此，这行代码的作用是将targetDataSource设置为动态数据源的目标数据源，</span><br><span class="hljs-comment">        使得动态数据源可以从targetDataSource中获取到所有可用的数据源，</span><br><span class="hljs-comment">        并在需要访问数据时可以自动切换数据源。</span><br><span class="hljs-comment">		*/</span><br>        <span class="hljs-keyword">return</span> dynamicDataSource;<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setEnvironment</span><span class="hljs-params">(Environment environment)</span> &#123;<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<blockquote>
+<pre><code class="hljs">        targetDataSource.put(dbInfo,new DriverManagerDataSource(
+            objMap.get(&quot;url&quot;).toString(),
+            objMap.get(&quot;username&quot;).toString(),
+            objMap.get(&quot;password&quot;).toString()));
+</code></pre>
+</blockquote>
+<p>首先，这段代码中使用了<code>new DriverManagerDataSource()</code>语句创建了一个<code>DriverManagerDataSource</code>对象，并通过构造函数传入了数据库连接URL、用户名和密码等信息。<code>DriverManagerDataSource</code>是Spring JDBC框架中的一个数据源实现类，它可以根据提供的数据库连接信息来创建一个JDBC连接。<br />然后，将创建的<code>DriverManagerDataSource</code>对象存储到<code>targetDataSource</code>中，其中<code>dbInfo</code>表示该数据源的名称或者标识符，通常是一个字符串；<code>targetDataSource.put(dbInfo, dataSource)</code>方法将该数据源对象和对应的名称关联起来并存储到<code>targetDataSource</code>中，以便在程序运行时进行调用和切换。<br />通常情况下，<code>targetDataSource</code>是一个Map类型的对象，用于存储多个数据源对象，例如读写分离、分表等场景下需要使用多个数据源。在实际应用中，<code>targetDataSource</code>通常会被注入到<code>AbstractRoutingDataSource</code>类中，以实现数据源的动态切换功能。<br />综上所述，这段代码的作用是创建一个数据库连接，并将其存储到<code>targetDataSource</code>中，以便在需要访问对应数据库时可以从<code>targetDataSource</code>中获取到正确的连接。</p>
+<blockquote>
+<p> dynamicDataSource.setTargetDataSources(targetDataSource);</p>
+</blockquote>
+<p> 这行代码是将一个<code>targetDataSource</code>数据源对象设置为动态数据源<code>dynamicDataSource</code>的目标数据源。在Spring中，通过<code>DynamicDataSource</code>和<code>AbstractRoutingDataSource</code>两个类的配合使用，可以实现动态切换多个数据源。<br />具体来说，<code>DynamicDataSource</code>是对<code>AbstractRoutingDataSource</code>的一个扩展，它除了支持动态数据源的切换外，还支持针对不同的查询&#x2F;操作类型选择不同的数据源。<code>setTargetDataSources()</code>方法就是用于设置动态数据源的目标数据源的，即将<code>targetDataSource</code>对象作为参数传递进去，表示该动态数据源会从<code>targetDataSource</code>中获取所有可用的数据源。<br />在实际应用中，<code>targetDataSource</code>通常是一个Map类型的对象，用于存储多个数据源对象，例如读写分离、分表等场景下需要使用多个数据源。每个数据源需要有一个标识符，如数据库名称或者其他标识符，以便在程序运行时进行调用和切换。设置了目标数据源后，动态数据源就可以根据特定的规则或条件来动态地切换数据源，并且能够确保在当前线程中只有一个数据源被使用。<br />因此，这行代码的作用是将<code>targetDataSource</code>设置为动态数据源的目标数据源，使得动态数据源可以从<code>targetDataSource</code>中获取到所有可用的数据源，并在需要访问数据时可以自动切换数据源。</p>
+<h2 id="DataSourceAutoConfig-java-1"><a href="#DataSourceAutoConfig-java-1" class="headerlink" title="DataSourceAutoConfig.java"></a>DataSourceAutoConfig.java</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.tute.middleware.db.router.config;<br><br><span class="hljs-keyword">import</span> com.tute.middleware.db.router.util.PropertyUtil;<br><span class="hljs-keyword">import</span> com.tute.middleware.db.router.DBRouterConfig;<br><span class="hljs-keyword">import</span> com.tute.middleware.db.router.dynamic.DynamicDataSource;<br><span class="hljs-keyword">import</span> org.springframework.context.EnvironmentAware;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Bean;<br><span class="hljs-keyword">import</span> org.springframework.context.annotation.Configuration;<br><span class="hljs-keyword">import</span> org.springframework.core.SpringProperties;<br><span class="hljs-keyword">import</span> org.springframework.core.env.Environment;<br><span class="hljs-keyword">import</span> org.springframework.jdbc.datasource.DriverManagerDataSource;<br><br><span class="hljs-keyword">import</span> javax.sql.DataSource;<br><span class="hljs-keyword">import</span> java.util.HashMap;<br><span class="hljs-keyword">import</span> java.util.Map;<br><span class="hljs-keyword">import</span> java.util.Objects;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment">* 2023/5/10</span><br><span class="hljs-comment">**/</span><br><br><span class="hljs-meta">@Configuration</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DataSourceAutoConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">EnvironmentAware</span> &#123;<br>        <span class="hljs-keyword">private</span> Map&lt;String, Map&lt;String, Object&gt;&gt; dataSourceMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> dbCount; <span class="hljs-comment">//数据库的数量</span><br>        <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> tbCount; <span class="hljs-comment">//表的数量</span><br><br>        <span class="hljs-meta">@Bean</span><br>        <span class="hljs-keyword">public</span> DBRouterConfig <span class="hljs-title function_">dbRouterConfig</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DBRouterConfig</span>(dbCount, tbCount);<br>        &#125;<br><br>        <span class="hljs-meta">@Bean</span><br>        <span class="hljs-keyword">public</span> DataSource <span class="hljs-title function_">dataSource</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-comment">// 创建数据源</span><br>            Map&lt;Object, Object&gt; targetDataSource = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>            <span class="hljs-keyword">for</span> (String dbInfo : dataSourceMap.keySet()) &#123;<br>                <span class="hljs-comment">//根据外层Map的KeySet的key拿到内层的Map</span><br>                Map&lt;String, Object&gt; objMap = dataSourceMap.get(dbInfo);<br>                targetDataSource.put(dbInfo, <span class="hljs-keyword">new</span> <span class="hljs-title class_">DriverManagerDataSource</span>(<br>                    objMap.get(<span class="hljs-string">&quot;url&quot;</span>).toString(),<br>                    objMap.get(<span class="hljs-string">&quot;username&quot;</span>).toString(),<br>                    objMap.get(<span class="hljs-string">&quot;password&quot;</span>).toString()));<br>            &#125;<br>            <span class="hljs-comment">//设置数据源</span><br>            <span class="hljs-type">DynamicDataSource</span> <span class="hljs-variable">dynamicDataSource</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DynamicDataSource</span>();<br>            dynamicDataSource.setTargetDataSources(targetDataSource);<br>            <span class="hljs-keyword">return</span> dynamicDataSource;<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setEnvironment</span><span class="hljs-params">(Environment environment)</span> &#123;<br>            <span class="hljs-type">String</span> <span class="hljs-variable">prefix</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;router.jdbc.datasource&quot;</span>;<br>            dbCount = Integer.parseInt(Objects.requireNonNull(environment.getProperty(prefix + <span class="hljs-string">&quot;dbCount&quot;</span>)));<br>            tbCount = Integer.parseInt(Objects.requireNonNull(environment.getProperty(prefix + <span class="hljs-string">&quot;tbCount&quot;</span>)));<br><br>            <span class="hljs-type">String</span> <span class="hljs-variable">dataSources</span> <span class="hljs-operator">=</span> environment.getProperty(prefix + <span class="hljs-string">&quot;list&quot;</span>);<br>            <span class="hljs-keyword">for</span> (String dbInfo : dataSources.split(<span class="hljs-string">&quot;,&quot;</span>)) &#123;<br>                Map&lt;String, Object&gt; dataSourceProps = PropertyUtil.handle(environment, prefix + dbInfo, Map.class);<br>                dataSourceMap.put(dbInfo, dataSourceProps);<br>            &#125;<br><br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
+<h3 id="PropertyUtil-java"><a href="#PropertyUtil-java" class="headerlink" title="PropertyUtil.java"></a>PropertyUtil.java</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.tute.middleware.db.router.util;<br><br><span class="hljs-keyword">import</span> org.springframework.core.env.Environment;<br><span class="hljs-keyword">import</span> org.springframework.core.env.PropertyResolver;<br><br><span class="hljs-keyword">import</span> java.lang.reflect.Constructor;<br><span class="hljs-keyword">import</span> java.lang.reflect.InvocationTargetException;<br><span class="hljs-keyword">import</span> java.lang.reflect.Method;<br><span class="hljs-keyword">import</span> java.util.Map;<br><span class="hljs-keyword">import</span> java.util.NoSuchElementException;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * 2023/5/10</span><br><span class="hljs-comment"> **/</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">PropertyUtil</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-variable">springBootVersion</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Class.forName(<span class="hljs-string">&quot;org.springframework.boot.bind.RelaxedPropertyResolver&quot;</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (ClassNotFoundException e) &#123;<br>            springBootVersion = <span class="hljs-number">2</span>;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-meta">@SuppressWarnings(&quot;unchecked&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> &lt;T&gt; T <span class="hljs-title function_">handle</span><span class="hljs-params">(<span class="hljs-keyword">final</span> Environment environment, <span class="hljs-keyword">final</span> String prefix, <span class="hljs-keyword">final</span> Class&lt;T&gt; targetClass)</span> &#123;<br>        <span class="hljs-keyword">if</span> (springBootVersion == <span class="hljs-number">1</span>) &#123;<br>            <span class="hljs-keyword">return</span> (T) v1(environment, prefix);<br>        &#125;<br>        <span class="hljs-keyword">return</span> (T) v2(environment, prefix, targetClass);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">v1</span><span class="hljs-params">(Environment environment, String prefix)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Class&lt;?&gt; resolverClass = Class.forName(<span class="hljs-string">&quot;org.springframework.boot.bind.RelaxedPropertyResolver&quot;</span>);<br>            Constructor&lt;?&gt; resolverConstructor = resolverClass.getDeclaredConstructor(PropertyResolver.class);<br>            <span class="hljs-type">Method</span> <span class="hljs-variable">getSubPropertiesMethod</span> <span class="hljs-operator">=</span> resolverClass.getDeclaredMethod(<span class="hljs-string">&quot;getSubProperties&quot;</span>, String.class);<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">resolverObject</span> <span class="hljs-operator">=</span> resolverConstructor.newInstance(environment);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">prefixParam</span> <span class="hljs-operator">=</span> prefix.endsWith(<span class="hljs-string">&quot;.&quot;</span>) ? prefix : prefix + <span class="hljs-string">&quot;.&quot;</span>;<br>            <span class="hljs-keyword">return</span> getSubPropertiesMethod.invoke(resolverObject, prefixParam);<br>        &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">final</span> ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException<br>                       | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(ex.getMessage(), ex);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Object <span class="hljs-title function_">v2</span><span class="hljs-params">(Environment environment, String prefix, Class&lt;?&gt; targetClass)</span> &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Class&lt;?&gt; binderClass = Class.forName(<span class="hljs-string">&quot;org.springframework.boot.context.properties.bind.Binder&quot;</span>);<br>            <span class="hljs-type">Method</span> <span class="hljs-variable">getMethod</span> <span class="hljs-operator">=</span> binderClass.getDeclaredMethod(<span class="hljs-string">&quot;get&quot;</span>, Environment.class);<br>            <span class="hljs-type">Method</span> <span class="hljs-variable">bindMethod</span> <span class="hljs-operator">=</span> binderClass.getDeclaredMethod(<span class="hljs-string">&quot;bind&quot;</span>, String.class, Class.class);<br>            <span class="hljs-comment">//public static Binder get(Environment environment) &#123;</span><br>            <span class="hljs-comment">//		return get(environment, null);</span><br>            <span class="hljs-comment">//	&#125; Create a new &#123;@link Binder&#125; instance from the specified environment.</span><br>            <span class="hljs-type">Object</span> <span class="hljs-variable">binderObject</span> <span class="hljs-operator">=</span> getMethod.invoke(<span class="hljs-literal">null</span>, environment);<br>            <span class="hljs-type">String</span> <span class="hljs-variable">prefixParam</span> <span class="hljs-operator">=</span> prefix.endsWith(<span class="hljs-string">&quot;.&quot;</span>) ? prefix.substring(<span class="hljs-number">0</span>, prefix.length() - <span class="hljs-number">1</span>) : prefix;<br>            <span class="hljs-type">Object</span> <span class="hljs-variable">bindResultObject</span> <span class="hljs-operator">=</span> bindMethod.invoke(binderObject, prefixParam, targetClass);<br>            <span class="hljs-type">Method</span> <span class="hljs-variable">resultGetMethod</span> <span class="hljs-operator">=</span> bindResultObject.getClass().getDeclaredMethod(<span class="hljs-string">&quot;get&quot;</span>);<br><span class="hljs-comment">//            /**</span><br><span class="hljs-comment">//             * Return the object that was bound or throw a &#123;@link NoSuchElementException&#125; if no</span><br><span class="hljs-comment">//             * value was bound.</span><br><span class="hljs-comment">//             * @return the bound value (never &#123;@code null&#125;)</span><br><span class="hljs-comment">//             * @throws NoSuchElementException if no value was bound</span><br><span class="hljs-comment">//             * @see #isBound()</span><br><span class="hljs-comment">//             */</span><br><span class="hljs-comment">//            public T get() throws NoSuchElementException &#123;</span><br><span class="hljs-comment">//                if (this.value == null) &#123;</span><br><span class="hljs-comment">//                    throw new NoSuchElementException(&quot;No value bound&quot;);</span><br><span class="hljs-comment">//                &#125;</span><br><span class="hljs-comment">//                return this.value;</span><br><span class="hljs-comment">//            &#125;</span><br>            <span class="hljs-keyword">return</span> resultGetMethod.invoke(bindResultObject);<br>        &#125; <span class="hljs-keyword">catch</span> (<span class="hljs-keyword">final</span> ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException<br>                       | IllegalArgumentException | InvocationTargetException ex) &#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(ex.getMessage(), ex);<br>        &#125;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>在Spring Boot 2.x版本中，<code>org.springframework.boot.bind.RelaxedPropertyResolver</code>类已经被废弃并移除了。官方文档建议使用<code>org.springframework.boot.context.properties.bind.BindResult</code>和<code>org.springframework.boot.context.properties.bind.Binder</code>类来代替。<br />具体来说，<code>BindResult</code>类封装了配置属性的绑定结果，并提供了一些便捷的方法来获取绑定后的属性值，例如<code>get()</code>、<code>getOrNull()</code>等。<code>Binder</code>类则是一个工厂类，用于创建配置属性绑定器对象，并通过<code>bind()</code>方法将属性绑定到Java对象中。<br />需要注意的是，在Spring Boot 2.x版本中，还引入了一种新的注解方式<code>@ConfigurationProperties</code>来绑定属性，该方式比<code>RelaxedPropertyResolver</code>更加直观和易用。可以通过在应用程序的配置文件中为Java对象指定前缀来实现对属性的绑定，例如：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">myapp:</span><br>  <span class="hljs-attr">db:</span><br>    <span class="hljs-attr">url:</span> <span class="hljs-string">jdbc:mysql://localhost:3306/mydb</span><br>    <span class="hljs-attr">username:</span> <span class="hljs-string">root</span><br>    <span class="hljs-attr">password:</span> <span class="hljs-string">password</span><br></code></pre></td></tr></table></figure>
+<p>然后在Java代码中使用<code>@ConfigurationProperties(prefix = &quot;myapp.db&quot;)</code>注解来指定要绑定的前缀，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@ConfigurationProperties(prefix = &quot;myapp.db&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DataSourceProperties</span> &#123;<br>    <span class="hljs-keyword">private</span> String url;<br>    <span class="hljs-keyword">private</span> String username;<br>    <span class="hljs-keyword">private</span> String password;<br>    <span class="hljs-comment">// ...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>以上示例代码中<code>DataSourceProperties</code>类的属性名与配置文件中的属性名一一对应，这样就可以自动将配置文件中的属性值绑定到Java对象中了。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">&quot;unchecked&quot;</span>)<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-operator">&lt;</span><span class="hljs-type">T</span><span class="hljs-operator">&gt;</span> <span class="hljs-type">T</span> handle(<span class="hljs-keyword">final</span> <span class="hljs-type">Environment</span> environment, <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-keyword">prefix</span>, <span class="hljs-keyword">final</span> <span class="hljs-type">Class</span>&lt;<span class="hljs-type">T</span>&gt; targetClass) &#123;<br>    <span class="hljs-keyword">switch</span> (springBootVersion) &#123;<br>        <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:<br>            <span class="hljs-keyword">return</span> (<span class="hljs-type">T</span>) v1(environment, <span class="hljs-keyword">prefix</span>);<br>        <span class="hljs-keyword">default</span>:<br>            <span class="hljs-keyword">return</span> (<span class="hljs-type">T</span>) v2(environment, <span class="hljs-keyword">prefix</span>, targetClass);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在Java中，<strong>final关键字</strong>可以用来修饰变量、方法和类等元素，表示它们是不可变的或者不可继承的。在这个方法的形参中加上final关键字，主要是为了限制这些参数不被修改，从而增强代码的可靠性和安全性。<br />具体来说，将形参加上final关键字，有以下几个好处：</p>
+<ol>
+<li>防止无意间修改参数值：在方法执行的过程中，如果修改了某个参数的值，可能会影响到程序的正确性。将参数标记为final后，编译器会阻止在方法内部对参数进行修改，避免出现意外的错误。</li>
+<li>提高代码可读性：通过使用final关键字，可以让代码更加简洁明了，表达出开发者的意图。同时，也方便其他开发者阅读和理解代码。</li>
+<li>优化代码执行效率：在一定程度上，使用final关键字还可以提高代码的执行效率。因为final变量只需要赋值一次就固定了，所以在运行时可以直接使用变量的值，而不必每次都去重新计算。</li>
+</ol>
+<p>总之，将方法的形参加上final关键字，可以使代码更加健壮、简洁、高效，从而提高代码的质量和可维护性。</p>
+<p>**@SuppressWarnings(“unchecked”)**注解的作用是告诉编译器在忽略范型类型转换警告时不需要提示，即抑制编译器产生”unchecked warning”警告信息。<br />在Java中，泛型是一种静态检查机制，可以在编译时检测一些可能发生的类型转换错误。但是，在某些情况下，由于Java的类型擦除机制，编译器无法检测到所有的类型错误。例如，当使用原始类型时，编译器无法检测到泛型类型转换错误。此时，编译器会产生“unchecked warning”警告信息，提醒开发者可能存在类型安全问题。<br />通过在代码中添加@SuppressWarnings(“unchecked”)注解，可以告诉编译器忽略对该行代码的类型检查，从而消除编译器产生的“unchecked warning”警告信息。需要注意的是，使用@SuppressWarnings(“unchecked”)注解应该谨慎，只有在确保该行代码不会产生类型安全问题时才能使用。<br />总之，@SuppressWarnings(“unchecked”)注解的作用是抑制编译器对Java泛型类型转换的警告信息，通常用于一些不能避免的类型转换操作，但同时也要注意尽可能减少使用该注解，以保证程序的类型安全性。</p>
+<h3 id="v1方法："><a href="#v1方法：" class="headerlink" title="v1方法："></a>v1方法：</h3><p>这段代码的作用是获取Spring Boot应用程序中指定前缀的子属性，并返回一个<strong>Map类型的结果</strong>，其中键为属性名，值为属性值。<br />具体来说，该方法在运行时通过反射机制调用了org.springframework.boot.bind.RelaxedPropertyResolver类中的方法来获取属性。首先，该方法使用Class.forName()方法获取RelaxedPropertyResolver类的Class对象，然后通过getDeclaredConstructor()方法获取该类带有一个PropertyResolver参数的构造器。接着，使用getDeclaredMethod()方法获取getSubProperties()方法的引用，这个方法接受一个字符串参数，表示要获取哪个属性的子属性。最后，通过反射机制创建RelaxedPropertyResolver类的实例，并调用getSubProperties()方法来获取指定前缀的子属性。<br />代码中的prefix参数表示要获取的属性前缀，例如”spring.datasource”。该方法将前缀参数传递给getSubProperties()方法，然后将返回的Map类型的结果转换成一个符合预期的Map类型并返回。如果在运行时出现异常，则会抛出一个运行时异常，并将原始异常信息和堆栈跟踪记录下来。<br />需要注意的是，在Spring Boot 2.x版本中，RelaxedPropertyResolver类已经被废弃并移除了。建议使用org.springframework.boot.context.properties.bind.Binder类来替代。</p>
+<h3 id="v2方法："><a href="#v2方法：" class="headerlink" title="v2方法："></a>v2方法：</h3><p>这段代码的作用是使用反射机制绑定Spring Boot应用程序中指定前缀的属性到Java对象中，并返回绑定后的Java对象。<br />具体来说，该方法在运行时通过反射机制调用了org.springframework.boot.context.properties.bind.Binder类中的方法来实现属性绑定。首先，该方法使用Class.forName()方法获取Binder类的Class对象，然后使用getDeclaredMethod()方法获取该类的两个反射方法引用：get()方法和bind()方法。接着，通过反射机制调用get()方法创建Binder对象实例，并将该对象存储在变量binderObject中。然后使用bind()方法将指定前缀的属性绑定到Java对象中。最后，通过反射机制调用Result.get()方法从绑定结果对象中获取绑定的Java对象。<br />需要注意的是，该方法中的prefix参数表示要绑定的前缀，例如”spring.datasource”；targetClass参数表示要绑定的Java类类型，例如DataSourceProperties.class。同时，也要注意在运行时出现异常时，会抛出一个运行时异常，并将原始异常信息和堆栈跟踪记录下来。<br />总之，该方法利用反射机制实现了基于前缀的配置属性自动绑定到Java对象上。该方法可以将配置文件中指定前缀的属性值映射、注入到Java对象中，方便进行后续操作。</p>
+<p>问：为什么在这段代码中使用反射机制呢？<br />在这段代码中，使用反射机制的主要原因是为了解决接口和实现类之间的依赖关系问题。具体来说，<code>org.springframework.boot.context.properties.bind.Binder</code>类是Spring Boot框架内部使用的一个工具类，用于将配置文件中的属性值绑定到Java对象上。如果直接调用<code>new</code>关键字创建该类的对象，会导致编译时依赖于该类的具体实现，从而造成程序耦合度过高的问题。<br />使用反射机制可以在运行时动态获取<code>Binder</code>类的引用，并根据需要进行方法调用。这种方式可以有效地减少程序的耦合度，提高代码的灵活性和可维护性。另外，通过使用反射机制，我们还可以轻松地替换<code>Binder</code>类的具体实现，以满足不同的业务需求。<br />总之，使用反射机制可以帮助我们解决接口和实现类之间的依赖关系问题，从而提高程序的灵活性和可维护性。当然，在使用反射机制时也要注意安全性和效率方面的问题，尽量避免滥用反射。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Java/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="category-chain-item">数据库</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/programing/">#programing</a>
+      
+        <a href="/tags/Java/">#Java</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dbRouter</div>
+      <div>http://example.com/2023/05/10/dbRouter/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Justin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年5月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/06/Netty04-%E4%BC%98%E5%8C%96%E4%B8%8E%E6%BA%90%E7%A0%81/" title="Netty04-优化与源码">
+                        <span class="hidden-mobile">Netty04-优化与源码</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
