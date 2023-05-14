@@ -15,8 +15,6 @@
       
       <category>Java</category>
       
-      <category>数据库</category>
-      
     </categories>
     
     
@@ -26,7 +24,7 @@
       
       <tag>Java</tag>
       
-      <tag>数据库</tag>
+      <tag>Database</tag>
       
     </tags>
     
@@ -182,7 +180,7 @@
     <link href="/2023/05/05/hahaha/"/>
     <url>/2023/05/05/hahaha/</url>
     
-    <content type="html"><![CDATA[<p>衣带渐宽终不悔,为伊消得人憔悴</p><span id="more"></span><p>蓦然回首,那人竟在灯火阑珊处。</p><!-- ![这是图片](blog\source\_posts\2023-05-05-hahaha\dog.jpg "Magic Gardens") #无效格式1 --><!-- 有效格式1 --><p><img src="/images/dog.jpg" alt="123"></p><p>++++++++++</p><!-- 无效格式 --><p><img src="/2023/05/05/hahaha/dog.jpg" alt="222"> </p><p>++++++++++<br> <!-- 有效格式1 --><br><img src="/images/dog.jpg" alt="123"> </p><p>++++++++++++<br> <!-- 有效格式2 --><br><img src="/images/dog.jpg" alt="12"></p>]]></content>
+    <content type="html"><![CDATA[<p>衣带渐宽终不悔,为伊消得人憔悴</p><span id="more"></span> <!-- 有效格式1 --><p><img src="/images/dog.jpg" alt="dog"></p>]]></content>
     
     
     <categories>
@@ -194,7 +192,7 @@
     
     <tags>
       
-      <tag>诗词歌赋</tag>
+      <tag>诗词</tag>
       
     </tags>
     
