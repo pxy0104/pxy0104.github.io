@@ -24,8 +24,8 @@
 <meta property="og:description" content="当业务变得极其庞大的时候，原有的单表可能不足以维持业务的正常发展，此时就需要进行分库分表操作，来缓解数据库的压力">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://pxy0104.github.io/2023/05/10/dbRouter/01.png">
-<meta property="article:published_time" content="2023-05-10T13:54:57.000Z">
-<meta property="article:modified_time" content="2023-05-14T05:40:43.117Z">
+<meta property="article:published_time" content="2023-05-10T21:54:57.000Z">
+<meta property="article:modified_time" content="2023-05-15T14:49:46.331Z">
 <meta property="article:author" content="Justin">
 <meta property="article:tag" content="programing">
 <meta property="article:tag" content="Java">
@@ -214,8 +214,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-05-10 13:54" pubdate>
-          2023年5月10日 下午
+        <time datetime="2023-05-10 21:54" pubdate>
+          2023年5月10日 晚上
         </time>
       </span>
     
@@ -237,7 +237,7 @@
         
         
         
-          199 分钟
+          202 分钟
         
       </span>
     
@@ -404,6 +404,7 @@ public void afterThrowing(JoinPoint joinPoint, Exception e) &#123;
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">public Object <span class="hljs-keyword">do</span><span class="hljs-constructor">Router(ProceedingJoinPoint <span class="hljs-params">jp</span>, DBRouter <span class="hljs-params">dbRouter</span>)</span> throws Throwable &#123;<br>        String dbKey = dbRouter.key<span class="hljs-literal">()</span>;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">StringUtils</span>.</span></span>is<span class="hljs-constructor">Blank(<span class="hljs-params">dbKey</span>)</span>) throw <span class="hljs-keyword">new</span> <span class="hljs-constructor">RuntimeException(<span class="hljs-string">&quot;annotation DBRouter key is null！&quot;</span>)</span>;<br>        <br>        String dbKeyAttr = get<span class="hljs-constructor">AttrValue(<span class="hljs-params">dbKey</span>, <span class="hljs-params">jp</span>.<span class="hljs-params">getArgs</span>()</span>);<br>        <span class="hljs-built_in">int</span> size = dbRouterConfig.get<span class="hljs-constructor">DbCount()</span><span class="hljs-operator"> * </span>dbRouterConfig.get<span class="hljs-constructor">TbCount()</span>;<br>       <br>        <span class="hljs-built_in">int</span> idx = (size - <span class="hljs-number">1</span>) &amp; (dbKeyAttr.hash<span class="hljs-constructor">Code()</span> ^ (dbKeyAttr.hash<span class="hljs-constructor">Code()</span> &gt;&gt;&gt; <span class="hljs-number">16</span>));<br>      <br>        <span class="hljs-built_in">int</span> dbIdx = idx<span class="hljs-operator"> / </span>dbRouterConfig.get<span class="hljs-constructor">TbCount()</span> + <span class="hljs-number">1</span>;<br>        <span class="hljs-built_in">int</span> tbIdx = idx - dbRouterConfig.get<span class="hljs-constructor">TbCount()</span><span class="hljs-operator"> * </span>(dbIdx - <span class="hljs-number">1</span>);<br>  <br>        <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DBContextHolder</span>.</span></span>set<span class="hljs-constructor">DBKey(String.<span class="hljs-params">format</span>(<span class="hljs-string">&quot;%02d&quot;</span>, <span class="hljs-params">dbIdx</span>)</span>);<br>        <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DBContextHolder</span>.</span></span>set<span class="hljs-constructor">TBKey(String.<span class="hljs-params">format</span>(<span class="hljs-string">&quot;%02d&quot;</span>, <span class="hljs-params">tbIdx</span>)</span>);<br>        logger.info(<span class="hljs-string">&quot;数据库路由 method：&#123;&#125; dbIdx：&#123;&#125; tbIdx：&#123;&#125;&quot;</span>, get<span class="hljs-constructor">Method(<span class="hljs-params">jp</span>)</span>.get<span class="hljs-constructor">Name()</span>, dbIdx, tbIdx);<br>  <br>        <span class="hljs-keyword">try</span> &#123;<br>            return jp.proceed<span class="hljs-literal">()</span>;<br>        &#125; finally &#123;<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DBContextHolder</span>.</span></span>clear<span class="hljs-constructor">DBKey()</span>;<br>            <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">DBContextHolder</span>.</span></span>clear<span class="hljs-constructor">TBKey()</span>;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure>
 
 <p>这段代码实现了一个数据库的路由功能。具体来说，它基于传入的注解（DBRouter）中的键值（key），计算出该操作要使用的数据库和表的索引，并将其存储在上下文中（DBContextHolder）。这样，在整个操作过程中，就可以根据上下文中的索引选择正确的数据库和表，而不需要显式地指定或硬编码。最终，无论执行是否成功，上下文都会被清除以释放资源。</p>
+<h3 id="为什么使用扰动函数"><a href="#为什么使用扰动函数" class="headerlink" title="为什么使用扰动函数"></a>为什么使用扰动函数</h3><p>理论上来说字符串的hashCode是一个int类型值，那可以直接作为数组下标了，且不会出现碰撞。但是这个hashCode的取值范围是[-2147483648, 2147483647]，有将近40亿的长度，谁也不能把数组初始化的这么大，内存也是放不下的。<br>我们默认初始化的Map大小是16个长度 DEFAULT_INITIAL_CAPACITY &#x3D; 1 &lt;&lt; 4，所以获取的Hash值并不能直接作为下标使用，需要与数组长度进行取模运算得到一个下标值，也就是我们上面做的散列列子。<br>那么，hashMap源码这里不只是直接获取哈希值，还进行了一次扰动计算，(h &#x3D; key.hashCode()) ^ (h &gt;&gt;&gt; 16)。把哈希值右移16位，也就正好是自己长度的一半，之后与原哈希值做异或运算，这样就混合了原哈希值中的高位和低位，增大了<strong>随机性</strong>。</p>
 
                 
               </div>
