@@ -7,7 +7,7 @@ tags:
 categories: 八股文
 ---
 
-@Autowired和@Resource是两个常用的依赖注入注解，它们用于告诉Spring容器在创建对象时如何注入其他对象。
+@Autowired和@Resource是两个常用的依赖注入注解，它们用于告诉Spring容器在创建对象时如何注入其他对象
 <!-- more -->
 它们之间的主要区别如下：
 
