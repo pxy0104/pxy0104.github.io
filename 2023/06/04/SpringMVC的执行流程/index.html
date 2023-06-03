@@ -16,25 +16,30 @@
   <meta name="author" content="Justin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="@Autowired和@Resource是两个常用的依赖注入注解，它们用于告诉Spring容器在创建对象时如何注入其他对象">
+    <meta name="description" content="SpringMVC的执行流程指的是当一个请求到达SpringMVC应用时，SpringMVC框架如何处理这个请求并生成响应的整个过程。SpringMVC的执行流程包括以下几个步骤">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Autowired和Resource注解的区别">
-<meta property="og:url" content="http://pxy0104.github.io/2023/05/16/@Autowired%E5%92%8C@Resource%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:title" content="SpringMVC的执行流程">
+<meta property="og:url" content="http://pxy0104.github.io/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Bolg">
-<meta property="og:description" content="@Autowired和@Resource是两个常用的依赖注入注解，它们用于告诉Spring容器在创建对象时如何注入其他对象">
+<meta property="og:description" content="SpringMVC的执行流程指的是当一个请求到达SpringMVC应用时，SpringMVC框架如何处理这个请求并生成响应的整个过程。SpringMVC的执行流程包括以下几个步骤">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-16T14:35:12.000Z">
-<meta property="article:modified_time" content="2023-06-03T17:58:03.105Z">
+<meta property="og:image" content="http://pxy0104.github.io/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685811889358-36ee6b9d-bf7e-4b05-ba36-42aa506132de.png">
+<meta property="og:image" content="http://pxy0104.github.io/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685811831593-5f8c4969-ec46-442b-ab8a-e3c5000aaa77.png">
+<meta property="og:image" content="http://pxy0104.github.io/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685812128002-68a3aaba-3661-4f01-8035-ddb23b7e17da.png">
+<meta property="article:published_time" content="2023-06-04T01:18:36.000Z">
+<meta property="article:modified_time" content="2023-06-03T17:59:39.342Z">
 <meta property="article:author" content="Justin">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="八股文">
+<meta property="article:tag" content="Spring">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://pxy0104.github.io/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685811889358-36ee6b9d-bf7e-4b05-ba36-42aa506132de.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Autowired和Resource注解的区别 - Bolg</title>
+  <title>SpringMVC的执行流程 - Bolg</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Autowired和Resource注解的区别"></span>
+            <span id="subtitle" data-typed-text="SpringMVC的执行流程"></span>
           
         </div>
 
@@ -211,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-05-16 14:35" pubdate>
-          2023年5月16日 下午
+        <time datetime="2023-06-04 01:18" pubdate>
+          2023年6月4日 凌晨
         </time>
       </span>
     
@@ -223,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          690 字
+          1.1k 字
         
       </span>
     
@@ -234,7 +239,7 @@
         
         
         
-          6 分钟
+          10 分钟
         
       </span>
     
@@ -272,22 +277,57 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Autowired和Resource注解的区别</h1>
+            <h1 style="display: none">SpringMVC的执行流程</h1>
             
             
               <div class="markdown-body">
                 
-                <p>@Autowired和@Resource是两个常用的依赖注入注解，它们用于告诉Spring容器在创建对象时如何注入其他对象</p>
+                <p>SpringMVC的执行流程指的是当一个请求到达SpringMVC应用时，SpringMVC框架如何处理这个请求并生成响应的整个过程。SpringMVC的执行流程包括以下几个步骤</p>
 <span id="more"></span>
-<p>它们之间的主要区别如下：</p>
+
 <ol>
-<li>来源不同：@Autowired注解是Spring框架提供的；而@Resource注解是Java EE标准中定义的，可以使用在非Spring应用程序中。</li>
-<li>注入方式不同：@Autowired注解默认按照类型（class）自动装配，如果需要更精确的控制，可以结合@Qualifier注解使用；而@Resource注解默认按照名称（name）自动装配，也可以通过@Resource(name &#x3D; “xxx”)指定具体的名称。</li>
-<li>适用范围不同：@Autowired注解可以用于构造方法、成员变量、Setter方法和普通方法上；而@Resource注解只能用于成员变量和Setter方法上。</li>
-<li>匹配规则不同：@Autowired采用了类型匹配的机制进行注入，因此，如果容器中存在多个类型相同的对象，则会抛出异常；而@Resource采用了名称匹配的机制进行注入，如果名称匹配失败，则会尝试进行类型匹配。</li>
-<li>兼容性不同：由于@Autowired是Spring框架提供的注解，因此不兼容非Spring环境；而@Resource是Java EE标准中提供的注解，因此具有更好的兼容性。</li>
+<li><p>用户向服务器发送请求，请求被SpringMVC 前端控制器 DispatcherServlet捕获。</p>
+</li>
+<li><p>DispatcherServlet对请求URL进行解析，得到请求资源标识符（URI），判断请求URI对应的映射:</p>
+</li>
 </ol>
-<p>总之，@Autowired和@Resource都是用于依赖注入的注解，它们各有优缺点。如果需要在Spring应用程序中进行依赖注入，建议使用@Autowired注解；如果需要在Java EE应用程序中进行依赖注入，或者需要更精确地控制依赖注入的方式，建议使用@Resource注解。</p>
+<ul>
+<li><p>不存在</p>
+<p>i. 再判断是否配置了mvc:default-servlet-handler</p>
+<p>ii. 如果没配置，则控制台报映射查找不到，客户端展示404错误</p>
+</li>
+</ul>
+<p><img src="/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685811889358-36ee6b9d-bf7e-4b05-ba36-42aa506132de.png" srcset="/img/loading.gif" lazyload alt="01.png"><br><img src="/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685811831593-5f8c4969-ec46-442b-ab8a-e3c5000aaa77.png" srcset="/img/loading.gif" lazyload alt="02.png"></p>
+<html>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</html> iii. 如果有配置，则访问目标资源（一般为静态资源，如：JS,CSS,HTML），找不到客户端也会展示404 错误  
+
+<p><img src="/2023/06/04/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/1685812128002-68a3aaba-3661-4f01-8035-ddb23b7e17da.png" srcset="/img/loading.gif" lazyload alt="03.png"></p>
+<ul>
+<li>存在,则继续执行下面的流程</li>
+</ul>
+<ol start="3">
+<li><p>根据该URI，调用HandlerMapping获得该Handler配置的所有相关的对象（包括Handler对象以及 Handler对象对应的拦截器），最后以HandlerExecutionChain执行链对象的形式返回。 </p>
+</li>
+<li><p>DispatcherServlet 根据获得的Handler，选择一个合适的HandlerAdapter。 </p>
+</li>
+<li><p>如果成功获得HandlerAdapter，此时将开始执行拦截器的preHandler(…)方法【正向】 </p>
+</li>
+<li><p>提取Request中的模型数据，填充Handler入参，开始执行Handler（Controller)方法，处理请求。 在填充Handler的入参过程中，根据你的配置，Spring将帮你做一些额外的工作：</p>
+<p>  a) HttpMessageConveter： 将请求消息（如Json、xml等数据）转换成一个对象，将对象转换为指定 的响应信息</p>
+<p>  b) 数据转换：对请求消息进行数据转换。如String转换成Integer、Double等</p>
+<p>  c) 数据格式化：对请求消息进行数据格式化。 如将字符串转换成格式化数字或格式化日期等</p>
+<p>  d) 数据验证： 验证数据的有效性（长度、格式等），验证结果存储到BindingResult或Error中</p>
+</li>
+<li><p>Handler执行完成后，向DispatcherServlet 返回一个ModelAndView对象。</p>
+</li>
+<li><p>此时将开始执行拦截器的postHandle(…)方法【逆向】。</p>
+</li>
+<li><p>根据返回的ModelAndView（此时会判断是否存在异常：如果存在异常，则执行 HandlerExceptionResolver进行异常处理）选择一个适合的ViewResolver进行视图解析，根据Model 和View，来渲染视图。</p>
+</li>
+<li><p>渲染视图完毕执行拦截器的afterCompletion(…)方法【逆向】。</p>
+</li>
+<li><p>将渲染结果返回给客户端。</p>
+</li>
+</ol>
 
                 
               </div>
@@ -306,7 +346,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" class="category-chain-item">八股文</a>
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
   
   
 
@@ -325,6 +365,8 @@
       
         <a href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/">#八股文</a>
       
+        <a href="/tags/Spring/">#Spring</a>
+      
     </div>
   
 </div>
@@ -335,8 +377,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Autowired和Resource注解的区别</div>
-      <div>http://pxy0104.github.io/2023/05/16/@Autowired和@Resource注解的区别/</div>
+      <div>SpringMVC的执行流程</div>
+      <div>http://pxy0104.github.io/2023/06/04/SpringMVC的执行流程/</div>
     </div>
     <div class="license-meta">
       
@@ -348,7 +390,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年5月16日</div>
+          <div>2023年6月4日</div>
         </div>
       
       
@@ -380,18 +422,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/05/17/MyBatis%E7%9A%84%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/" title="MyBatis的基本使用">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MyBatis的基本使用</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/05/10/dbRouter/" title="dbRouter">
-                        <span class="hidden-mobile">dbRouter</span>
+                      <a href="/2023/05/20/%E5%8A%A8%E7%89%A9%E5%86%9C%E5%9C%BA/" title="动物农场">
+                        <span class="hidden-mobile">动物农场</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
