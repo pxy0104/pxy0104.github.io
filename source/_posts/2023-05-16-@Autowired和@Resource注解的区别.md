@@ -1,5 +1,5 @@
 ---
-title: Autowired和Resource注解的区别
+title: 使用@Autowired和@Resource注解的区别
 date: 2023-05-16 22:35:12
 tags: 
 - 八股文
