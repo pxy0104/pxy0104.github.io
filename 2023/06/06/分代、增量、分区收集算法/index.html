@@ -16,28 +16,28 @@
   <meta name="author" content="Justin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="java.lang.ThreadLocal 是什么，有哪些用处，它是怎么实现的">
+    <meta name="description" content="单一的算法是无法满足所有的需求，并没有一种算法可以完全替代其他算法，所以需要一些整合算法来把各种单一的算法的优点集合在一起">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ThreadLocal">
-<meta property="og:url" content="http://pxy0104.github.io/2023/06/04/ThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/index.html">
+<meta property="og:title" content="分代、增量、分区收集算法">
+<meta property="og:url" content="http://pxy0104.github.io/2023/06/06/%E5%88%86%E4%BB%A3%E3%80%81%E5%A2%9E%E9%87%8F%E3%80%81%E5%88%86%E5%8C%BA%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="Bolg">
-<meta property="og:description" content="java.lang.ThreadLocal 是什么，有哪些用处，它是怎么实现的">
+<meta property="og:description" content="单一的算法是无法满足所有的需求，并没有一种算法可以完全替代其他算法，所以需要一些整合算法来把各种单一的算法的优点集合在一起">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://pxy0104.github.io/2023/06/04/ThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/1685871120015-fa2daf4b-4d6a-4072-9b49-af59a5f0d9cc.png">
-<meta property="article:published_time" content="2023-06-04T09:34:16.000Z">
-<meta property="article:modified_time" content="2023-06-04T09:39:34.439Z">
+<meta property="og:image" content="http://pxy0104.github.io/2023/06/06/%E5%88%86%E4%BB%A3%E3%80%81%E5%A2%9E%E9%87%8F%E3%80%81%E5%88%86%E5%8C%BA%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/01.png">
+<meta property="article:published_time" content="2023-06-06T22:11:45.000Z">
+<meta property="article:modified_time" content="2023-06-06T14:18:32.983Z">
 <meta property="article:author" content="Justin">
 <meta property="article:tag" content="Java">
-<meta property="article:tag" content="解决方案">
 <meta property="article:tag" content="八股文">
+<meta property="article:tag" content="JVM">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://pxy0104.github.io/2023/06/04/ThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/1685871120015-fa2daf4b-4d6a-4072-9b49-af59a5f0d9cc.png">
+<meta name="twitter:image" content="http://pxy0104.github.io/2023/06/06/%E5%88%86%E4%BB%A3%E3%80%81%E5%A2%9E%E9%87%8F%E3%80%81%E5%88%86%E5%8C%BA%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/01.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>ThreadLocal - Bolg</title>
+  <title>分代、增量、分区收集算法 - Bolg</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -203,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="ThreadLocal"></span>
+            <span id="subtitle" data-typed-text="分代、增量、分区收集算法"></span>
           
         </div>
 
@@ -214,8 +214,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-06-04 09:34" pubdate>
-          2023年6月4日 上午
+        <time datetime="2023-06-06 22:11" pubdate>
+          2023年6月6日 晚上
         </time>
       </span>
     
@@ -226,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.1k 字
+          1.7k 字
         
       </span>
     
@@ -237,7 +237,7 @@
         
         
         
-          10 分钟
+          14 分钟
         
       </span>
     
@@ -275,26 +275,28 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">ThreadLocal</h1>
+            <h1 style="display: none">分代、增量、分区收集算法</h1>
             
             
               <div class="markdown-body">
                 
-                <p>java.lang.ThreadLocal 是什么，有哪些用处，它是怎么实现的</p>
+                <p>单一的算法是无法满足所有的需求，并没有一种算法可以完全替代其他算法，所以需要一些整合算法来把各种单一的算法的优点集合在一起</p>
 <span id="more"></span>
-
-<h1 id="ThreadLocal"><a href="#ThreadLocal" class="headerlink" title="ThreadLocal"></a>ThreadLocal</h1><p><img src="/2023/06/04/ThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/1685871120015-fa2daf4b-4d6a-4072-9b49-af59a5f0d9cc.png" srcset="/img/loading.gif" lazyload alt="01.png"><br>ThreadLocal 是 Java 包中提供的一个类，它提供线程本地变量。如果创建一个 ThreadLocal 变量，那么访问这个变量的每个线程都会有这个变量的一个副本，在实际多线程操作时，操作的是自己本地内存中的变量，从而避免了线程安全问题。</p>
-<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>ThreadLocal 的实现原理是：每个线程都有一个 ThreadLocalMap（ThreadLocal 内部类），Map 中元素的键为 ThreadLocal，而值对应线程的变量副本。</p>
-<p>因为每个线程都有自己的 ThreadLocalMap，其中存储的是当前线程的变量副本。所以，即使两个线程同时修改同一个 ThreadLocal 变量，它们实际上是在修改自己 ThreadLocalMap 中的 value，互不影响。所以ThreadLocal有自己特定的应用场景。</p>
-<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>ThreadLocal 有两个典型的使用场景：</p>
-<ol>
-<li>每个线程需要<strong>一个独享的对象</strong>（通常是工具类，典型需要使用的类有 SimpleDateFormat 和 Random）。</li>
-<li>每个线程内需要<strong>保存全局变量</strong>（例如在拦截器中获取用户信息），可以让不同方法直接使用，避免参数传递的麻烦。</li>
-</ol>
-<p>此外，ThreadLocal 还可以用来解决数据库连接、Session 管理等问题。</p>
-<h2 id="缺点以及解决方案"><a href="#缺点以及解决方案" class="headerlink" title="缺点以及解决方案"></a>缺点以及解决方案</h2><p>ThreadLocal 有一个缺点是它不可继承性。这意味着子线程无法访问在父线程中设置的本地线程变量。为了解决这个问题，引入了一个新的类 InheritableThreadLocal。使用该类后，子线程可以访问在创建子线程时父线程当时的本地线程变量。</p>
-<p>此外，在使用线程池的情况下，由于线程池是复用线程，不会重复创建，而上述的inheritableThreadLocals 是在创建子线程时才会将父线程的值复制到子线程，但是在线程池中不会重复创建，所以多次使用后，仍然记录的是第一次提交任务时的外部线程的值，造成了数据的错误。为了解决这个问题，阿里提出了 TransmittableThreadLocal 类。</p>
-<p>同时，使用ThreadLocal也会降低代码的可重用性，在Java的多线程编程中，为保证多个线程对共享变量的安全访问，通常会使用synchronized来保证同一时刻只有一个线程对共享变量进行操作。这种情况下可以将类变量放到ThreadLocal类型的对象中，使变量在每个线程中都有独立拷贝，不会出现一个线程读取变量时而被另一个线程修改的现象。这种独立的拷贝与代码重用是违背的，所以说会降低代码的可重用性。但它不是类似全局变量，相反是类似局部变量。</p>
+<h1 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h1><p>分代收集算法基于这样一个事实：不同的对象的生命周期是不一样的。因此，不同生命周期的对象可以采取不同的收集方式，以便提高垃圾的回收效率。一般是把Java堆分为新生代和老年代，这样就可以根据各个年代的特点使用不同的回收算法，以提高垃圾回收效率。<br>在Java程序运行的过程中，会产生大量的对象，其中有些对象是与业务信息相关，比如Http请求中的Session对象、线程、Socket连接，这类对象跟业务直接挂钩，因此生命周期比较长。但是还有一些对象，主要是程序运行过程中生成的临时变量，这些对象生命周期会比较短，比如：String对象，由于其不变类的特性，系统会产生大量的这些对象，有些对象甚至只用一次即可回收。<br>目前几乎所有的GC都采用分代收集算法执行垃圾回收的。<br>在HotSpot中，基于分代的概念，GC所使用的内存回收算法必须结合年轻代和老年代各自的特点。</p>
+<h2 id="年轻代（Young-Gen）"><a href="#年轻代（Young-Gen）" class="headerlink" title="年轻代（Young Gen）"></a>年轻代（Young Gen）</h2><p>年轻代特点：区域相对老年代较小，对象生命周期短、存活率低，回收频繁。<br>这种情况复制算法的回收整理，速度是最快的。复制算法的效率只和当前存活对象大小有关，因此很适用于年轻代的回收。而复制算法内存利用率不高的问题，通过hotspot中的两个survivor的设计得到缓解。</p>
+<h2 id="老年代（Tenured-Gen）"><a href="#老年代（Tenured-Gen）" class="headerlink" title="老年代（Tenured Gen）"></a>老年代（Tenured Gen）</h2><p>老年代特点：区域较大，对象生命周期长、存活率高，回收不及年轻代频繁。<br>这种情况存在大量存活率高的对象，复制算法明显变得不合适。一般是由标记-清除或者是标记-清除与标记-整理的混合实现。</p>
+<ul>
+<li>Mark阶段的开销与存活对象的数量成正比。</li>
+<li>Sweep阶段的开销与所管理区域的大小成正相关。</li>
+<li>Compact阶段的开销与存活对象的数据成正比。</li>
+</ul>
+<p>以HotSpot中的CMS回收器为例，CMS是基于Mark-Sweep实现的，对于对象的回收效率很高。而对于碎片问题，CMS采用基于Mark-Compact算法的Serial Old回收器作为补偿措施：当内存回收不佳（碎片导致的Concurrent Mode Failure时），将采用Serial Old执行Full GC以达到对老年代内存的整理。</p>
+<p>分代的思想被现有的虚拟机广泛使用。几乎所有的垃圾回收器都区分新生代和老年代</p>
+<h1 id="增量收集算法、分区算法"><a href="#增量收集算法、分区算法" class="headerlink" title="增量收集算法、分区算法"></a>增量收集算法、分区算法</h1><h2 id="增量收集算法"><a href="#增量收集算法" class="headerlink" title="增量收集算法"></a>增量收集算法</h2><p>上述现有的算法，在垃圾回收过程中，应用软件将处于一种Stop the World的状态。在Stop the World状态下，应用程序所有的线程都会挂起，暂停一切正常的工作，等待垃圾回收的完成。如果垃圾回收时间过长，应用程序会被挂起很久，将严重影响用户体验或者系统的稳定性。为了解决这个问题，即对实时垃圾收集算法的研究直接导致了增量收集（Incremental Collecting）算法的诞生。</p>
+<h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>如果一次性将所有的垃圾进行处理，需要造成系统长时间的停顿，那么就可以让垃圾收集线程和应用程序线程交替执行。每次，垃圾收集线程只收集一小片区域的内存空间，接着切换到应用程序线程。依次反复，直到垃圾收集完成。<br>总的来说，增量收集算法的基础仍是传统的标记-清除和复制算法。增量收集算法通过对线程间冲突的妥善处理，允许垃圾收集线程以分阶段的方式完成标记、清理或复制工作</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>使用这种方式，由于在垃圾回收过程中，间断性地还执行了应用程序代码，所以能减少系统的停顿时间。但是，因为线程切换和上下文转换的消耗，会使得垃圾回收的总体成本上升，造成系统吞吐量的下降。</p>
+<h2 id="分区算法"><a href="#分区算法" class="headerlink" title="分区算法"></a>分区算法</h2><p>一般来说，在相同条件下，堆空间越大，一次GC时所需要的时间就越长，有关GC产生的停顿也越长。为了更好地控制GC产生的停顿时间，将一块大的内存区域分割成多个小块，根据目标的停顿时间，每次合理地回收若干个小区间，而不是整个堆空间，从而减少一次GC所产生的停顿。<br>分代算法将按照对象的生命周期长短划分成两个部分，分区算法将整个堆空间划分成连续的不同小区间。<br>每一个小区间都独立使用，独立回收。这种算法的好处是可以控制一次回收多少个小区间。</p>
+<p><img src="/2023/06/06/%E5%88%86%E4%BB%A3%E3%80%81%E5%A2%9E%E9%87%8F%E3%80%81%E5%88%86%E5%8C%BA%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/01.png" srcset="/img/loading.gif" lazyload alt="01.png"></p>
 
                 
               </div>
@@ -330,9 +332,9 @@
       
         <a href="/tags/Java/">#Java</a>
       
-        <a href="/tags/%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">#解决方案</a>
-      
         <a href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/">#八股文</a>
+      
+        <a href="/tags/JVM/">#JVM</a>
       
     </div>
   
@@ -344,8 +346,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>ThreadLocal</div>
-      <div>http://pxy0104.github.io/2023/06/04/ThreadLocal是什么/</div>
+      <div>分代、增量、分区收集算法</div>
+      <div>http://pxy0104.github.io/2023/06/06/分代、增量、分区收集算法/</div>
     </div>
     <div class="license-meta">
       
@@ -357,7 +359,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年6月4日</div>
+          <div>2023年6月6日</div>
         </div>
       
       
@@ -389,18 +391,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/06/04/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" title="JVM垃圾回收算法">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">JVM垃圾回收算法</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/06/03/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" title="SpringMVC的执行流程">
-                        <span class="hidden-mobile">SpringMVC的执行流程</span>
+                      <a href="/2023/06/04/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" title="JVM垃圾回收算法">
+                        <span class="hidden-mobile">JVM垃圾回收算法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
