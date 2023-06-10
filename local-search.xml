@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>MySql中的事务隔离级别</title>
+    <link href="/2023/06/10/MySql%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/"/>
+    <url>/2023/06/10/MySql%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/</url>
+    
+    <content type="html"><![CDATA[<p>MySql中的事务隔离级别是为了解决脏读、不可重复读、幻读等一系列异常情况的…</p><span id="more"></span><h1 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h1><p>mysql中有四种隔离级别，分别是</p><ul><li>读未提交（Read Uncommitted）</li><li>读已提交（Read Committed）</li><li>可重复读（Repeatable Read）</li><li>串行化执行（Serializable）</li></ul><p>这四种隔离级别从上到下越来越高，它们是用来解决脏读，不可重复读，幻读这些异常情况的。</p><table><thead><tr><th>隔离级别</th><th>脏读</th><th>不可重复读</th><th>幻读</th></tr></thead><tbody><tr><td>读未提交（Read Uncommitted）</td><td>Yes</td><td>Yes</td><td>Yes</td></tr><tr><td>读已提交（Read Committed）</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td>可重复读（Repeatable Read）</td><td>No</td><td>No</td><td>Yes</td></tr><tr><td>串行化执行（Serializable）</td><td>No</td><td>No</td><td>No</td></tr></tbody></table><p><strong>脏读</strong> 是指事务读取到其他事务未提交的数据，<strong>不可重复读</strong> 是指在同一次事务中前后查询不一致的问题，<strong>幻读</strong> 是一次事务中前后数据量发生变化，用户产生不可预料的问题。这些问题都是数据库并发控制中的问题，可以通过锁机制来解决。</p><p>由于Serializable 性能极差 ,所以不适用于并发下的解决幻读。</p><p>隔离级别与并发性能成反相关关，系隔离级别越高，并发性能越差。在开发中，我们要根据业务需求等多方面来考虑选择合适的隔离级别。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>MySql</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>八股文</tag>
+      
+      <tag>MySql</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>常见的垃圾回收器</title>
     <link href="/2023/06/07/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/"/>
     <url>/2023/06/07/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/</url>

@@ -16,23 +16,35 @@
   <meta name="author" content="Justin">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http://pxy0104.github.io/categories/index.html">
+    <meta name="description" content="MySql中的事务隔离级别是为了解决脏读、不可重复读、幻读等一系列异常情况的…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySql中的事务隔离级别">
+<meta property="og:url" content="http://pxy0104.github.io/2023/06/10/MySql%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/index.html">
 <meta property="og:site_name" content="Bolg">
+<meta property="og:description" content="MySql中的事务隔离级别是为了解决脏读、不可重复读、幻读等一系列异常情况的…">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-06-10T08:49:57.000Z">
+<meta property="article:modified_time" content="2023-06-10T08:52:59.831Z">
 <meta property="article:author" content="Justin">
+<meta property="article:tag" content="八股文">
+<meta property="article:tag" content="MySql">
 <meta name="twitter:card" content="summary_large_image">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>分类 - Bolg</title>
+  <title>MySql中的事务隔离级别 - Bolg</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
 
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
 
 
 
@@ -82,7 +94,7 @@
   <header>
     
 
-<div class="header-inner" style="height: 60vh;">
+<div class="header-inner" style="height: 70vh;">
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
@@ -188,9 +200,49 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="分类"></span>
+            <span id="subtitle" data-typed-text="MySql中的事务隔离级别"></span>
           
         </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-10 08:49" pubdate>
+          2023年6月10日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          505 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
 
         
       </div>
@@ -206,327 +258,234 @@
 
   <main>
     
-      <div class="container nopadding-x-md">
-        <div id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">MySql中的事务隔离级别</h1>
+            
+            
+              <div class="markdown-body">
                 
+                <p>MySql中的事务隔离级别是为了解决脏读、不可重复读、幻读等一系列异常情况的…</p>
+<span id="more"></span>
 
+<h1 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h1><p>mysql中有四种隔离级别，分别是</p>
+<ul>
+<li>读未提交（Read Uncommitted）</li>
+<li>读已提交（Read Committed）</li>
+<li>可重复读（Repeatable Read）</li>
+<li>串行化执行（Serializable）</li>
+</ul>
+<p>这四种隔离级别从上到下越来越高，它们是用来解决脏读，不可重复读，幻读这些异常情况的。</p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>读未提交（Read Uncommitted）</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>读已提交（Read Committed）</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>可重复读（Repeatable Read）</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>串行化执行（Serializable）</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p><strong>脏读</strong> 是指事务读取到其他事务未提交的数据，<strong>不可重复读</strong> 是指在同一次事务中前后查询不一致的问题，<strong>幻读</strong> 是一次事务中前后数据量发生变化，用户产生不可预料的问题。这些问题都是数据库并发控制中的问题，可以通过锁机制来解决。</p>
+<p>由于Serializable 性能极差 ,所以不适用于并发下的解决幻读。</p>
+<p>隔离级别与并发性能成反相关关，系隔离级别越高，并发性能越差。在开发中，我们要根据业务需求等多方面来考虑选择合适的隔离级别。</p>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
 
-
-
-<div class="category-list">
+<span class="category-chains">
   
   
     
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Java"
-        id="heading-d52387880e1ea22817a72d3759213819" role="tab" data-toggle="collapse" href="#collapse-d52387880e1ea22817a72d3759213819"
-        aria-expanded="false"
-      >
-        Java
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/Java/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>14</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-d52387880e1ea22817a72d3759213819"
-           role="tabpanel" aria-labelledby="heading-d52387880e1ea22817a72d3759213819">
+      <span class="category-chain">
         
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/06/07/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" title="常见的垃圾回收器"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">常见的垃圾回收器</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/06/06/%E5%88%86%E4%BB%A3%E3%80%81%E5%A2%9E%E9%87%8F%E3%80%81%E5%88%86%E5%8C%BA%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95/" title="分代、增量、分区收集算法"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">分代、增量、分区收集算法</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/06/04/JVM%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%AE%97%E6%B3%95/" title="JVM垃圾回收算法"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">JVM垃圾回收算法</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/06/04/ThreadLocal%E6%98%AF%E4%BB%80%E4%B9%88/" title="ThreadLocal"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">ThreadLocal</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/06/03/SpringMVC%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" title="SpringMVC的执行流程"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">SpringMVC的执行流程</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/05/19/MyBatis%E8%BF%9B%E9%98%B6%E8%A1%A5%E5%85%85/" title="MyBatis进阶补充"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">MyBatis进阶补充</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/05/18/MyBatis%E8%BF%9B%E9%98%B6/" title="MyBatis进阶"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">MyBatis进阶</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/05/17/MyBatis%E7%9A%84%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/" title="MyBatis的基本使用"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">MyBatis的基本使用</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/05/10/dbRouter/" title="dbRouter"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">dbRouter</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/05/06/Netty04-%E4%BC%98%E5%8C%96%E4%B8%8E%E6%BA%90%E7%A0%81/" title="Netty04-优化与源码"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">Netty04-优化与源码</span>
-        </a>
-      
-    
-      
-      
-        <a href="/categories/Java/" class="list-group-item list-group-item-action">
-          <span class="category-post">More...</span>
-        </a>
-        
-  </div>
+  <a href="/categories/MySql/" class="category-chain-item">MySql</a>
+  
+  
 
-        
-      </div>
+      </span>
+    
+  
+</span>
+
     </div>
   
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="诗词"
-        id="heading-8e964d494f3985b3f8c61ac27d2f0e7b" role="tab" data-toggle="collapse" href="#collapse-8e964d494f3985b3f8c61ac27d2f0e7b"
-        aria-expanded="false"
-      >
-        诗词
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/%E8%AF%97%E8%AF%8D/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>1</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-8e964d494f3985b3f8c61ac27d2f0e7b"
-           role="tabpanel" aria-labelledby="heading-8e964d494f3985b3f8c61ac27d2f0e7b">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2022/12/22/hahaha/" title="hahaha"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">hahaha</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
   
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="八股文"
-        id="heading-e0c44a743c6ec57cfe704d84f1d3c852" role="tab" data-toggle="collapse" href="#collapse-e0c44a743c6ec57cfe704d84f1d3c852"
-        aria-expanded="false"
-      >
-        八股文
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
       
-        <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>1</span>
-        </a>
+        <a href="/tags/%E5%85%AB%E8%82%A1%E6%96%87/">#八股文</a>
       
-      <div class="category-collapse collapse " id="collapse-e0c44a743c6ec57cfe704d84f1d3c852"
-           role="tabpanel" aria-labelledby="heading-e0c44a743c6ec57cfe704d84f1d3c852">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
+        <a href="/tags/MySql/">#MySql</a>
       
-      
-        <a href="/2023/05/16/@Autowired%E5%92%8C@Resource%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%8C%BA%E5%88%AB/" title="使用@Autowired和@Resource注解的区别"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">使用@Autowired和@Resource注解的区别</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Book"
-        id="heading-2b1f94ef23b79bf90eb891cae1df7a90" role="tab" data-toggle="collapse" href="#collapse-2b1f94ef23b79bf90eb891cae1df7a90"
-        aria-expanded="false"
-      >
-        Book
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/Book/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>1</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-2b1f94ef23b79bf90eb891cae1df7a90"
-           role="tabpanel" aria-labelledby="heading-2b1f94ef23b79bf90eb891cae1df7a90">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/05/20/%E5%8A%A8%E7%89%A9%E5%86%9C%E5%9C%BA/" title="动物农场"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">动物农场</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category row nomargin-x">
-      <a class="category-item collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="MySql"
-        id="heading-9df306f03daedccf83f5e2983dbb5422" role="tab" data-toggle="collapse" href="#collapse-9df306f03daedccf83f5e2983dbb5422"
-        aria-expanded="false"
-      >
-        MySql
-        <span class="list-group-count"></span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-        <a href="/categories/MySql/" class="category-count col-2 col-md-1 col-xm-1">
-          <i class="iconfont icon-articles"></i>
-          <span>1</span>
-        </a>
-      
-      <div class="category-collapse collapse " id="collapse-9df306f03daedccf83f5e2983dbb5422"
-           role="tabpanel" aria-labelledby="heading-9df306f03daedccf83f5e2983dbb5422">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/06/10/MySql%E4%B8%AD%E7%9A%84%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" title="MySql中的事务隔离级别"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">MySql中的事务隔离级别</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
     </div>
   
 </div>
 
 
-              </div>
-            </div>
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySql中的事务隔离级别</div>
+      <div>http://pxy0104.github.io/2023/06/10/MySql中的事务隔离级别/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Justin</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
           </div>
         </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/07/%E5%B8%B8%E8%A7%81%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8/" title="常见的垃圾回收器">
+                        <span class="hidden-mobile">常见的垃圾回收器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
       </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
     
 
     
@@ -644,6 +603,99 @@
 
 
 
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
 
   <script  src="/js/local-search.js" ></script>
 
